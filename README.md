@@ -26,7 +26,7 @@ A high-performance AI microservice providing text summarisation, classification,
    python main.py
    ```
 
-## 🔌 API Documentation
+## API Documentation
 
 Once running, visit `http://localhost:8001/docs` to see the full interactive Swagger documentation.
 
