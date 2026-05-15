@@ -67,12 +67,12 @@ async def health_check():
 
 @app.post("/summarise", response_model=SummaryResponse, dependencies=[Depends(get_api_key)])
 @limiter.limit("10/minute")
-async def summarise(request: TextRequest, req: Request):
-    logger.info(f"Summarising text of length {len(request.text)}")
+async def summarise(payload: TextRequest, request: Request):
+    logger.info(f"Summarising text of length {len(payload.text)}")
     try:
         prompt = ChatPromptTemplate.from_template("Summarize the following text in 3 concise sentences:\n\n{text}")
         chain = prompt | llm
-        response = chain.invoke({"text": request.text})
+        response = chain.invoke({"text": payload.text})
         summary = response.content
         return SummaryResponse(summary=summary, word_count=len(summary.split()))
     except Exception as e:
@@ -81,15 +81,15 @@ async def summarise(request: TextRequest, req: Request):
 
 @app.post("/classify", response_model=ClassifyResponse, dependencies=[Depends(get_api_key)])
 @limiter.limit("10/minute")
-async def classify(request: ClassifyRequest, req: Request):
-    logger.info(f"Classifying text into categories: {request.categories}")
+async def classify(payload: ClassifyRequest, request: Request):
+    logger.info(f"Classifying text into categories: {payload.categories}")
     try:
         prompt = ChatPromptTemplate.from_template(
             "Classify the following text into exactly ONE of these categories: {categories}.\n"
             "Return only the category name.\n\nText: {text}"
         )
         chain = prompt | llm
-        response = chain.invoke({"text": request.text, "categories": ", ".join(request.categories)})
+        response = chain.invoke({"text": payload.text, "categories": ", ".join(payload.categories)})
         return ClassifyResponse(category=response.content.strip(), confidence=0.95)
     except Exception as e:
         logger.error(f"Classification failed: {str(e)}")
@@ -97,8 +97,8 @@ async def classify(request: ClassifyRequest, req: Request):
 
 @app.post("/extract", response_model=ExtractResponse, dependencies=[Depends(get_api_key)])
 @limiter.limit("10/minute")
-async def extract(request: ExtractRequest, req: Request):
-    logger.info(f"Extracting fields {request.fields} from text")
+async def extract(payload: ExtractRequest, request: Request):
+    logger.info(f"Extracting fields {payload.fields} from text")
     try:
         prompt = ChatPromptTemplate.from_template(
             "Extract the following fields as a JSON object from the text: {fields}.\n"
@@ -106,7 +106,7 @@ async def extract(request: ExtractRequest, req: Request):
             "JSON Output:"
         )
         chain = prompt | llm
-        response = chain.invoke({"text": request.text, "fields": ", ".join(request.fields)})
+        response = chain.invoke({"text": payload.text, "fields": ", ".join(payload.fields)})
         
         # Simple cleanup if the model adds markdown backticks
         json_str = response.content.replace("```json", "").replace("```", "").strip()
