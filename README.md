@@ -1,8 +1,8 @@
-# 🤖 Pro AI Service (FastAPI)
+# Pro AI Service (FastAPI)
 
 A high-performance AI microservice providing text summarisation, classification, and structured data extraction using **Groq** and **Llama 3.1**.
 
-## 🚀 Features
+##  Features
 - **Summarise**: Get concise summaries of long text.
 - **Classify**: Categorize text into custom defined labels.
 - **Extract**: Convert free text into structured JSON data.
@@ -11,7 +11,7 @@ A high-performance AI microservice providing text summarisation, classification,
 - **Logging**: Full request/error logging for production monitoring.
 - **Validation**: Robust data validation using Pydantic.
 
-## 🛠️ Setup
+## Setup
 
 1. **Install dependencies**:
    ```bash
@@ -44,7 +44,7 @@ All POST endpoints require the following header:
 }
 ```
 
-## 🏆 Assignment Requirements Met:
+## Requirements Met:
 - [x] POST `/summarise`
 - [x] POST `/classify`
 - [x] POST `/extract`
